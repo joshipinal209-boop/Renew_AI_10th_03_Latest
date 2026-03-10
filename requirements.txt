@@ -1,0 +1,8 @@
+flask==3.0.0
+flask-cors==6.0.2
+python-dotenv==1.0.0
+google-generativeai==0.8.6
+google-genai==1.63.0
+chromadb==1.1.0
+elevenlabs==2.38.0
+requests==2.32.5

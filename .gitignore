@@ -1,0 +1,7 @@
+.env
+renewai.db*
+server*.log
+__pycache__/
+objection_db/
+.gemini/
+.agent/

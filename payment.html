@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suraksha Life – Secure Payment Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --accent-blue: #1a237e;
+            --accent-green: #2e7d32;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .payment-card {
+            background: var(--bg-card);
+            max-width: 480px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a237e, #4a148c);
+            color: white;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            opacity: 0.8;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        .order-summary {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 8px;
+            margin-top: 8px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-size: 16px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-pay {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+        .btn-pay:hover {
+            background: #1b5e20;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 24px;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+
+        .success-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: white;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 32px;
+            z-index: 10;
+        }
+
+        .success-overlay.show {
+            display: flex;
+        }
+
+        .check-icon {
+            width: 80px;
+            height: 80px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="payment-card" style="position:relative;">
+        <div id="success-view" class="success-overlay">
+            <div class="check-icon">✓</div>
+            <h2 style="color:var(--accent-green);margin-bottom:8px;">Payment Successful!</h2>
+            <p style="color:var(--text-secondary);font-size:14px;margin-bottom:24px;">Your policy renewal has been
+                processed. You will receive a confirmation email shortly.</p>
+            <button class="btn-pay" style="background:var(--accent-blue)" onclick="window.close()">Close Window</button>
+        </div>
+
+        <div class="header">
+            <h1>Suraksha Life</h1>
+            <p>Renew Your Policy Securely</p>
+        </div>
+
+        <div class="content">
+            <div class="order-summary">
+                <div class="summary-row"><span>Policy ID</span><span id="display-policy-id">...</span></div>
+                <div class="summary-row"><span>Product</span><span id="display-product">...</span></div>
+                <div class="summary-row"><span>Total Amount</span><span id="display-amount">...</span></div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active">Credit/Debit Card</div>
+                <div class="tab">UPI / QR</div>
+            </div>
+
+            <div class="input-group">
+                <label>Card Number</label>
+                <input type="text" placeholder="XXXX XXXX XXXX 4242" value="4242 4242 4242 4242">
+            </div>
+            <div style="display:flex;gap:16px;">
+                <div class="input-group" style="flex:1;">
+                    <label>Expiry Date</label>
+                    <input type="text" placeholder="MM/YY" value="12/28">
+                </div>
+                <div class="input-group" style="flex:1;">
+                    <label>CVV</label>
+                    <input type="password" placeholder="***" value="123">
+                </div>
+            </div>
+
+            <button id="pay-button" class="btn-pay">Pay & Renew Policy</button>
+
+            <div class="footer">
+                🔒 Secure SSL Encrypted Payment Gateway<br>
+                © 2026 Suraksha Life Insurance Co. Ltd.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const policyId = window.location.pathname.split('/').pop();
+        const product = urlParams.get('product') || 'Insurance Policy';
+
+        document.getElementById('display-policy-id').textContent = policyId;
+        document.getElementById('display-product').textContent = product;
+
+        // Fetch amount if needed or use a placeholder
+        fetch(`/api/policy/${policyId}`)
+            .then(res => res.json())
+            .then(r => {
+                if (r.success) {
+                    document.getElementById('display-amount').textContent = '₹' + r.data.policy.premium_amount.toLocaleString('en-IN');
+                }
+            });
+
+        document.getElementById('pay-button').onclick = async () => {
+            const btn = document.getElementById('pay-button');
+            btn.textContent = 'Processing...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/payment/confirm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ policy_id: policyId, amount: 0 }) // amount handled by backend
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('success-view').classList.add('show');
+                } else {
+                    alert('Payment failed: ' + data.message);
+                    btn.textContent = 'Pay & Renew Policy';
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                alert('Network error. Please try again.');
+                btn.textContent = 'Pay & Renew Policy';
+                btn.disabled = false;
+            }
+        };
+    </script>
+
+</body>
+
+</html>
